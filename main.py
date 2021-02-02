@@ -2,20 +2,10 @@ from ChessTimer import ChessTimer
 import threading, time
 import tkinter as tk
 
-def noUI():
-    whiteName = input("Enter white player's name: ")
-    blackName = input("Enter black player's name: ")
-    timeLimit = int(input("Time limit in minutes: "))
-    increment = int(input("Time increment in seconds: "))
-    timer = ChessTimer(whiteName, blackName, timeLimit, increment)
-    timer.startTimer()
-
 timeLimit = 10
 increment = 0
 
 def getInput():
-    import tkinter as tk
-
     def setEntryText(entry, text):
         entry.delete(0, tk.END)
         entry.insert(0, text)
@@ -39,6 +29,7 @@ def getInput():
 
 
     window = tk.Tk()
+    window.title('Setup')
     window.columnconfigure([0, 1], weight = 1, minsize = 100)
     window.columnconfigure(2, weight = 1, minsize = 50)
     window.rowconfigure([0, 1, 2], weight = 1, minsize = 50)
@@ -46,6 +37,7 @@ def getInput():
     timeLabel = tk.Label(master = window, text = 'Time limit: ')
     timeLabel.grid(row = 0, column = 0, sticky = 'w')
     timeInput = tk.Entry(master = window, text = '10')
+    setEntryText(timeInput, timeLimit)
     timeInput.grid(row = 0, column = 1, sticky = 'w')
     timeSubmit = tk.Button(master = window, text = 'Set', command = setTimeLimit)
     timeSubmit.grid(row = 0, column = 2)
@@ -53,6 +45,7 @@ def getInput():
     incLabel = tk.Label(master = window, text = 'Increment: ')
     incLabel.grid(row = 1, column = 0, sticky = 'w')
     incInput = tk.Entry(master = window, text = '0')
+    setEntryText(incInput, increment)
     incInput.grid(row = 1, column = 1, sticky = 'w')
     incSubmit = tk.Button(master = window, text = 'Set', command = setIncrement)
     incSubmit.grid(row = 1, column = 2)
@@ -64,33 +57,42 @@ def getInput():
     submit.grid(row = 2, column = 1,)
     window.mainloop()
 
-def run(game):
+def run():
     def getClockString(player):
         clock = player.clock
-        if clock < 200:
-            return f'{clock//600}:{(clock//10)%60}:{(clock%10)}'
+        minute = clock//600
+        second = (clock//10)%60
+        milisec = clock%10
+        if second < 10: second = '0' + str(second)
+        if clock < 20:
+            return f'{minute}:{second}:{milisec}'
         else:
-            return f'{clock//600}:{(clock//10)%60}'
+            return f'{minute}:{second}'
 
-    def getClock(game):
-        white = game.white
-        black = game.black
+    def getClock():
+        white = timer.white
+        black = timer.black
         return (getClockString(white), getClockString(black))
 
     def updateClock():
-        wc, bc = getClock(game)
+        wc, bc = getClock()
         wClock['text'] = wc
         bClock['text'] = bc
         window.after(50, updateClock)
 
     def switchTurn(event):
-        game.switchTurn()
+        timer.switchTurn()
+
+    timer = ChessTimer("White", "Black", timeLimit, increment)
+    runThread = threading.Thread(target = timer.runTimer, args = (), daemon = True)
+    runThread.start()
 
     window = tk.Tk()
+    window.title('Clock')
     # window.columnconfigure([0, 1], weight = 1, minsize = 300)
     # window.rowconfigure([0, 1], weight = 1, minsize = 150)
-    # whiteNameLabel = tk.Label(master = window, text = game.white.name)
-    # blackNameLabel = tk.Label(master = window, text = game.black.name)
+    # whiteNameLabel = tk.Label(master = window, text = timer.white.name)
+    # blackNameLabel = tk.Label(master = window, text = timer.black.name)
     # whiteNameLabel.grid(row = 0, column = 0)
     # blackNameLabel.grid(row = 0, column = 1)
     window.columnconfigure(0, weight = 1, minsize = 250)
@@ -112,7 +114,4 @@ def run(game):
     
 
 getInput()
-timer = ChessTimer("White", "Black", timeLimit, increment)
-runThread = threading.Thread(target = timer.runTimer, args = (), daemon = True)
-runThread.start()
-run(timer)
+run()
