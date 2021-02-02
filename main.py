@@ -1,5 +1,6 @@
 from ChessTimer import ChessTimer
 import threading, time
+import tkinter as tk
 
 def noUI():
     whiteName = input("Enter white player's name: ")
@@ -8,78 +9,6 @@ def noUI():
     increment = int(input("Time increment in seconds: "))
     timer = ChessTimer(whiteName, blackName, timeLimit, increment)
     timer.startTimer()
-
-import tkinter as tk
-
-'''
-window = tk.Tk()
-greeting = tk.Label(text = 'Hello World', fg = 'white', bg = 'black', width = 40, height = 20)
-greeting.pack()
-
-button = tk.Button(text = "Click me!", width = 25, height = 5, bg = "blue", fg = "yellow")
-button.pack()
-
-entry = tk.Entry()
-entry.pack()
-
-window.mainloop()
-
-import tkinter as tk
-
-window = tk.Tk()
-
-frame1 = tk.Frame(master=window, width=200, height=100, bg="red")
-frame1.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
-
-frame2 = tk.Frame(master=window, width=100, bg="yellow")
-frame2.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
-
-frame3 = tk.Frame(master=window, width=50, bg="blue")
-frame3.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
-
-
-window.mainloop()
-
-import tkinter as tk
-
-window = tk.Tk()
-for i in range(3):
-    window.columnconfigure(i, weight=1, minsize=75)
-    window.rowconfigure(i, weight=1, minsize=50)
-
-for i in range(3):
-    for j in range(3):
-        frame = tk.Frame(
-            master=window,
-            relief=tk.RAISED,
-            borderwidth=1
-        )
-        frame.grid(row=i, column=j, padx=5, pady=5)
-        label = tk.Label(master=frame, text=f"Row {i}\nColumn {j}")
-        label.pack(padx=10, pady=10)
-
-
-
-window.mainloop()
-
-
-import tkinter as tk
-import random
-
-def rollDice():
-    result = random.randint(1, 6)
-    resultLabel['text'] = str(result)
-
-
-window = tk.Tk()
-window.columnconfigure(0, weight = 1, minsize = 200)
-window.rowconfigure([0, 1], weight = 1, minsize = 100)
-resultLabel = tk.Label(master = window, text = '0')
-rollButton = tk.Button(master = window, text = 'Roll me', command = rollDice)
-rollButton.grid(row = 0, column = 0, sticky = 'nsew')
-resultLabel.grid(row = 1, column = 0, sticky = 'nsew')
-window.mainloop()
-'''
 
 timeLimit = 10
 increment = 0
@@ -136,35 +65,49 @@ def getInput():
     window.mainloop()
 
 def run(game):
+    def getClockString(player):
+        clock = player.clock
+        if clock < 200:
+            return f'{clock//600}:{(clock//10)%60}:{(clock%10)}'
+        else:
+            return f'{clock//600}:{(clock//10)%60}'
+
     def getClock(game):
         white = game.white
         black = game.black
-        return (f'{white.clock//600}:{(white.clock//10)%60}:{(white.clock%10)}',
-        f'{black.clock//600}:{(black.clock//10)%60}:{(black.clock%10)}')
+        return (getClockString(white), getClockString(black))
 
     def updateClock():
         wc, bc = getClock(game)
         wClock['text'] = wc
         bClock['text'] = bc
-        window.after(1000, updateClock)
+        window.after(50, updateClock)
 
     def switchTurn(event):
         game.switchTurn()
 
     window = tk.Tk()
-    window.columnconfigure([0, 1], weight = 1, minsize = 300)
-    window.rowconfigure([0, 1], weight = 1, minsize = 150)
+    # window.columnconfigure([0, 1], weight = 1, minsize = 300)
+    # window.rowconfigure([0, 1], weight = 1, minsize = 150)
+    # whiteNameLabel = tk.Label(master = window, text = game.white.name)
+    # blackNameLabel = tk.Label(master = window, text = game.black.name)
+    # whiteNameLabel.grid(row = 0, column = 0)
+    # blackNameLabel.grid(row = 0, column = 1)
+    window.columnconfigure(0, weight = 1, minsize = 250)
+    window.rowconfigure([0, 1], weight = 1, minsize = 80)
+    window.resizable(0, 0)
+    whiteFrame = tk.Frame(master = window, bg = 'white')
+    whiteFrame.grid(row = 0, column = 0, sticky = 'nesw')
+    blackFrame = tk.Frame(master = window, bg = 'black')
+    blackFrame.grid(row = 1, column = 0, sticky = 'nesw')
 
-    whiteNameLabel = tk.Label(master = window, text = game.white.name)
-    blackNameLabel = tk.Label(master = window, text = game.black.name)
-    whiteNameLabel.grid(row = 0, column = 0)
-    blackNameLabel.grid(row = 0, column = 1)
-    wClock = tk.Label(master = window, text = '0')
-    bClock = tk.Label(master = window, text = '0')
-    wClock.grid(row = 1, column = 0)
-    bClock.grid(row = 1, column = 1)
+    wClock = tk.Label(master = whiteFrame, text = '0', bg = 'white', fg = 'black', font = ('Bahnschrift SemiBold', 44))
+    bClock = tk.Label(master = blackFrame, text = '0', bg = 'black', fg = 'white', font = ('Bahnschrift SemiBold', 44))
+
+    wClock.pack(side = tk.LEFT, padx=10)
+    bClock.pack(side = tk.LEFT, padx=10)
     window.bind("<Key>", switchTurn)
-    window.after(1000, updateClock)
+    window.after(50, updateClock)
     window.mainloop()
     
 
