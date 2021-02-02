@@ -1,4 +1,5 @@
 from ChessTimer import ChessTimer
+from config import *
 import threading, time
 import tkinter as tk
 
@@ -25,6 +26,7 @@ def getInput():
     window = tk.Tk()
     window.title('Setup')
     window.resizable(0, 0)
+    window.iconbitmap(ICON)
     window.columnconfigure([0, 1], weight = 1, minsize = 100)
     window.rowconfigure([0, 1, 2], weight = 1, minsize = 50)
     
@@ -46,6 +48,7 @@ def getInput():
     submit = tk.Button(master = window, text = 'Exit', command = exit)
     submit.grid(row = 2, column = 1, sticky = 'ew')
     window.mainloop()
+
 
 def run():
     def getClockString(player):
@@ -73,11 +76,13 @@ def run():
     def switchTurn(event):
         timer.switchTurn()
 
+
     timer = ChessTimer("White", "Black", timeLimit, increment)
     runThread = threading.Thread(target = timer.runTimer, args = (), daemon = True)
     runThread.start()
 
     window = tk.Tk()
+    window.iconbitmap(ICON)
     window.title('Clock')
     window.columnconfigure(0, weight = 1, minsize = 250)
     window.rowconfigure([0, 1], weight = 1, minsize = 80)
@@ -96,7 +101,7 @@ def run():
     window.bind("<Key>", switchTurn)
     window.after(50, updateClock)
     window.mainloop()
-    
+
 
 getInput()
 run()

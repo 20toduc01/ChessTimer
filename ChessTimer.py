@@ -1,5 +1,7 @@
 import time, os, threading, msvcrt, sys
+from config import *
 from playsound import playsound
+
 class Player(object):
     def __init__(self):
         self.name = ''
@@ -42,7 +44,7 @@ class ChessTimer(object):
         while white.clock*black.clock != 0:
             playerInterrupt = threading.Thread(target = self.keyboardInterrupt, args = (), daemon = True)
             playerInterrupt.start()
-            time.sleep(0.089) # FIX LATER
+            time.sleep(ONE_TENTH_A_SECOND) # FIX LATER
             if self.turn == 'white':
                 white.clock -= 1
             else:
