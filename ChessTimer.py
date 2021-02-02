@@ -24,7 +24,6 @@ class ChessTimer(object):
         print(f'{white.name} : {white.clock//600}:{(white.clock//10)%60}:{(white.clock%10)}')
         print(f'{black.name} : {black.clock//600}:{(black.clock//10)%60}:{(black.clock%10)}')
 
-    
     def switchTurn(self):
         if self.turn == 'white':
             self.turn = 'black'
@@ -33,12 +32,16 @@ class ChessTimer(object):
             self.turn = 'white'
             self.black.clock += self.increment
     
+    def keyboardInterrupt(self):
+        msvcrt.getch()
+        self.switchTurn()
+
     def runTimer(self):
         white = self.white
         black = self.black
         while white.clock*black.clock != 0:
-            # playerInterrupt = threading.Thread(target = keyboardInterrupt, args = (), daemon = True)
-            # playerInterrupt.start()
+            playerInterrupt = threading.Thread(target = self.keyboardInterrupt, args = (), daemon = True)
+            playerInterrupt.start()
             time.sleep(0.089) # FIX LATER
             if self.turn == 'white':
                 white.clock -= 1
@@ -55,5 +58,5 @@ class ChessTimer(object):
 if __name__ == "__main__":
     timeLimit = int(input("Time: "))
     increment = int(input("Inc: "))
-    ChessTimer("White", "Black", timeLimit, increment).runTimer()
-    time.sleep(100000)
+    timer = ChessTimer("White", "Black", timeLimit, increment)
+    timer.runTimer()
