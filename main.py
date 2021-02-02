@@ -79,25 +79,20 @@ def run():
 
     window = tk.Tk()
     window.title('Clock')
-    # window.columnconfigure([0, 1], weight = 1, minsize = 300)
-    # window.rowconfigure([0, 1], weight = 1, minsize = 150)
-    # whiteNameLabel = tk.Label(master = window, text = timer.white.name)
-    # blackNameLabel = tk.Label(master = window, text = timer.black.name)
-    # whiteNameLabel.grid(row = 0, column = 0)
-    # blackNameLabel.grid(row = 0, column = 1)
     window.columnconfigure(0, weight = 1, minsize = 250)
     window.rowconfigure([0, 1], weight = 1, minsize = 80)
     window.resizable(0, 0)
+
     whiteFrame = tk.Frame(master = window, bg = 'white')
     whiteFrame.grid(row = 0, column = 0, sticky = 'nesw')
+    wClock = tk.Label(master = whiteFrame, text = '0', bg = 'white', fg = 'black', font = ('Bahnschrift SemiBold', 44))
+    wClock.pack(side = tk.LEFT, padx=10)
+
     blackFrame = tk.Frame(master = window, bg = 'black')
     blackFrame.grid(row = 1, column = 0, sticky = 'nesw')
-
-    wClock = tk.Label(master = whiteFrame, text = '0', bg = 'white', fg = 'black', font = ('Bahnschrift SemiBold', 44))
     bClock = tk.Label(master = blackFrame, text = '0', bg = 'black', fg = 'white', font = ('Bahnschrift SemiBold', 44))
-
-    wClock.pack(side = tk.LEFT, padx=10)
     bClock.pack(side = tk.LEFT, padx=10)
+    
     window.bind("<Key>", switchTurn)
     window.after(50, updateClock)
     window.mainloop()

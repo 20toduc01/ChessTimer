@@ -1,5 +1,5 @@
 import time, os, threading, msvcrt, sys
-
+from playsound import playsound
 class Player(object):
     def __init__(self):
         self.name = ''
@@ -48,7 +48,8 @@ class ChessTimer(object):
             else:
                 black.clock -= 1
             self.drawTimer(white, black)
-            
+        
+        playsound('timeout.mp3')
         if white.clock == 0:
             print(f'{white.name} lost on time')
         else:
