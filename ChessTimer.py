@@ -13,7 +13,6 @@ class Player(object):
         self.piece = piece
         self.clock = timeLimit
 
-
 class ChessTimer(object):
     def __init__(self, whiteName, blackName, timeLimit, increment):
         self.white = Player(whiteName, 'white', timeLimit*600)
@@ -56,7 +55,6 @@ class ChessTimer(object):
             print(f'{white.name} lost on time')
         else:
             print(f'{black.name} lost on time')
-
 
 if __name__ == "__main__":
     timeLimit = int(input("Time: "))

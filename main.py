@@ -6,6 +6,27 @@ import tkinter as tk
 timeLimit = 10
 increment = 0
 
+def moveable(window):
+    def start_move(event):
+        window.x = event.x
+        window.y = event.y
+
+    def stop_move(event):
+        window.x = None
+        window.y = None
+
+    def do_move(event):
+        deltax = event.x - window.x
+        deltay = event.y - window.y
+        x = window.winfo_x() + deltax
+        y = window.winfo_y() + deltay
+        window.geometry(f"+{x}+{y}")
+
+
+    window.bind("<ButtonPress-1>", start_move)
+    window.bind("<ButtonRelease-1>", stop_move)
+    window.bind("<B1-Motion>", do_move)
+
 def getInput():
     def setEntryText(entry, text):
         entry.delete(0, tk.END)
@@ -21,7 +42,6 @@ def getInput():
         except:
             setEntryText(timeInput, timeLimit)
             setEntryText(incInput, increment)
-
 
     window = tk.Tk()
     window.title('Setup')
@@ -49,7 +69,6 @@ def getInput():
     submit.grid(row = 2, column = 1, sticky = 'ew')
     window.mainloop()
 
-
 def run():
     def getClockString(player):
         clock = player.clock
@@ -76,14 +95,13 @@ def run():
     def switchTurn(event):
         timer.switchTurn()
 
-
     timer = ChessTimer("White", "Black", timeLimit, increment)
     runThread = threading.Thread(target = timer.runTimer, args = (), daemon = True)
     runThread.start()
 
     window = tk.Tk()
-    window.iconbitmap(ICON)
-    window.title('Clock')
+    moveable(window)
+    window.wm_overrideredirect(True)
     window.columnconfigure(0, weight = 1, minsize = 250)
     window.rowconfigure([0, 1], weight = 1, minsize = 80)
     window.resizable(0, 0)
@@ -101,7 +119,6 @@ def run():
     window.bind("<Key>", switchTurn)
     window.after(50, updateClock)
     window.mainloop()
-
 
 getInput()
 run()
